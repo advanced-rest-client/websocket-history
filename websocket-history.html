@@ -21,6 +21,7 @@ the License.
     <style>
     :host {
       display: block;
+      @apply --arc-font-body1;
       @apply --websocket-history;
     }
 
@@ -30,7 +31,7 @@ the License.
 
     date-time {
       font-size: 14px;
-      color: rgba(0, 0, 0, 0.54);
+      color: var(--websocket-history-time-label, rgba(0, 0, 0, 0.54));
       margin-right: 12px;
       @apply --websocket-history-date-time;
     }
@@ -64,6 +65,7 @@ the License.
    * ----------------|-------------|----------
    * `--websocket-history` | Mixin applied to the element | `{}`
    * `--arc-font-subhead` | Mixin applied to the element's title | `{}`
+   * `--websocket-history-time-label` | Color of the date-time label | `rgba(0, 0, 0, 0.54)`
    * `--websocket-history-date-time` | Mixin applied to the `date-time` element | `{}`
    *
    * @polymer
@@ -72,7 +74,9 @@ the License.
    * @demo demo/index.html
    */
   class WebsocketHistory extends Polymer.Element {
-    static get is() { return 'websocket-history'; }
+    static get is() {
+      return 'websocket-history';
+    }
     static get properties() {
       return {
         // List of history items to render
