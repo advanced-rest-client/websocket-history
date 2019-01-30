@@ -1,24 +1,14 @@
 <!doctype html>
-<!--
-@license
-Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
 <html>
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-
-    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../webcomponentsjs/webcomponents-loader.js"></script>
     <script src="../../web-component-tester/browser.js"></script>
     <script src="../../iron-test-helpers/test-helpers.js"></script>
     <script src="../../iron-test-helpers/mock-interactions.js"></script>
     <link rel="import" href="../../app-pouchdb/pouchdb.html">
-    <script src="data-generator.js"></script>
+    <script src="../demo/data-generator.js"></script>
     <script src="../../chance/dist/chance.min.js"></script>
     <link rel="import" href="../websocket-history.html">
   </head>
@@ -31,9 +21,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </test-fixture>
 
     <script>
-    /* global fixture, assert, DataGenerator, MockInteractions, TestHelpers, sinon */
+    /* global fixture, assert, DataGenerator, MockInteractions, sinon */
     suite('basic', function() {
-
       suiteSetup(function() {
         return DataGenerator.generateData();
       });
@@ -41,39 +30,39 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         return DataGenerator.destroyData();
       });
 
-      var element;
-      setup(function() {
+      let element;
+      setup(function(done) {
         element = fixture('basic');
-        var db = new PouchDB('websocket-url-history');
-        return db.allDocs({
+        const db = new PouchDB('websocket-url-history');
+        db.allDocs({
           include_docs: true
         })
-        .then(response => {
-          var items = response.rows.map(item => item.doc);
+        .then((response) => {
+          const items = response.rows.map((item) => item.doc);
           element.items = items;
-          TestHelpers.forceXIfStamp(element);
+          flush(() => done());
         });
       });
 
       test('Renders the list', function() {
-        var nodes = Polymer.dom(element.root).querySelectorAll('paper-item');
+        const nodes = element.shadowRoot.querySelectorAll('paper-item');
         assert.lengthOf(nodes, element.items.length);
       });
 
       test('Fires socket-url-changed custom event', function() {
-        var spy = sinon.spy();
+        const spy = sinon.spy();
         element.addEventListener('socket-url-changed', spy);
-        var node = Polymer.dom(element.root).querySelector('paper-button');
+        const node = element.shadowRoot.querySelector('paper-button');
         MockInteractions.tap(node);
         assert.isTrue(spy.calledOnce);
       });
 
       test('The socket-url-changed custom event has value property', function() {
-        var data;
+        let data;
         element.addEventListener('socket-url-changed', function(e) {
           data = e.detail;
         });
-        var node = Polymer.dom(element.root).querySelector('paper-button');
+        const node = element.shadowRoot.querySelector('paper-button');
         MockInteractions.tap(node);
         assert.typeOf(data.value, 'string');
       });
