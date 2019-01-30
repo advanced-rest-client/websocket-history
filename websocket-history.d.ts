@@ -8,13 +8,17 @@
  *   websocket-history.html
  */
 
+
+// tslint:disable:variable-name Describing an API that's defined elsewhere.
+// tslint:disable:no-any describes the API as best we are able today
+
 /// <reference path="../polymer/types/polymer-element.d.ts" />
 /// <reference path="../paper-item/paper-item.d.ts" />
 /// <reference path="../paper-item/paper-item-body.d.ts" />
 /// <reference path="../paper-button/paper-button.d.ts" />
 /// <reference path="../date-time/date-time.d.ts" />
 
-declare namespace UiElements {
+declare namespace ApiElements {
 
   /**
    * A web socket connections history view for ARC
@@ -52,5 +56,5 @@ declare namespace UiElements {
 }
 
 interface HTMLElementTagNameMap {
-  "websocket-history": UiElements.WebsocketHistory;
+  "websocket-history": ApiElements.WebsocketHistory;
 }
