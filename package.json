@@ -8,7 +8,7 @@
     "type": "git",
     "url": "git://github.com/advanced-rest-client/websocket-history.git"
   },
-  "name": "@api-components/websocket-history",
+  "name": "@advanced-rest-client/websocket-history",
   "version": "3.0.0-preview.1",
   "license": "Apache-2.0",
   "devDependencies": {
