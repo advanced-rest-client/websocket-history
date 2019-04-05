@@ -1,22 +1,38 @@
 {
-  "name": "@api-components/websocket-history",
-  "version": "2.0.0",
-  "license": "Apache-2.0",
   "description": "A web socket connections history view for ARC",
-  "devDependencies": {
-    "@polymer/gen-typescript-declarations": "^1.6.1"
+  "keywords": [
+    "web-components",
+    "polymer"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/advanced-rest-client/websocket-history.git"
   },
-  "private": false,
-  "main": "websocket-history.html",
+  "name": "@api-components/websocket-history",
+  "version": "3.0.0-preview.1",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "@advanced-rest-client/arc-models": "^3.0.0-preview.3",
+    "@polymer/gen-typescript-declarations": "^1.6.1",
+    "@polymer/iron-component-page": "^4.0.0",
+    "@polymer/iron-demo-helpers": "^3.0.0",
+    "@polymer/iron-test-helpers": "^3.0.0",
+    "@polymer/paper-toast": "^3.0.0",
+    "@polymer/test-fixture": "^4.0.2",
+    "@webcomponents/webcomponentsjs": "^2.0.0",
+    "chai": "^4.2.0",
+    "chance": "^1.0.18",
+    "mocha": "^5.2.0",
+    "pouchdb": "^7.0.0",
+    "sinon": "^7.2.3",
+    "wct-mocha": "^1.0.0"
+  },
+  "main": "websocket-history.js",
   "scripts": {
     "lint": "polymer lint websocket-history.html",
     "test-sauce": "polymer test --plugin sauce --job-name \"websocket-history:local-test\"",
     "test": "polymer test --plugin local",
     "update-types": "gen-typescript-declarations --deleteExisting --outDir ."
-  },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/advanced-rest-client/websocket-history.git"
   },
   "bugs": {
     "url": "https://github.com/advanced-rest-client/websocket-history/issues",
@@ -25,5 +41,15 @@
   "authors": [
     "Pawel Psztyc",
     "The Advanced REST client authors <arc@mulesoft.com>"
-  ]
+  ],
+  "contributors": [
+    "Pawel Psztyc",
+    "The Advanced REST client authors <arc@mulesoft.com>"
+  ],
+  "dependencies": {
+    "@advanced-rest-client/date-time": "^3.0.0-preview.1",
+    "@polymer/paper-button": "^3.0.0",
+    "@polymer/paper-item": "^3.0.0",
+    "@polymer/polymer": "^3.0.0"
+  }
 }

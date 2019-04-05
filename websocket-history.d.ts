@@ -5,18 +5,12 @@
  *   https://github.com/Polymer/tools/tree/master/packages/gen-typescript-declarations
  *
  * To modify these typings, edit the source file(s):
- *   websocket-history.html
+ *   websocket-history.js
  */
 
 
 // tslint:disable:variable-name Describing an API that's defined elsewhere.
 // tslint:disable:no-any describes the API as best we are able today
-
-/// <reference path="../polymer/types/polymer-element.d.ts" />
-/// <reference path="../paper-item/paper-item.d.ts" />
-/// <reference path="../paper-item/paper-item-body.d.ts" />
-/// <reference path="../paper-button/paper-button.d.ts" />
-/// <reference path="../date-time/date-time.d.ts" />
 
 declare namespace ApiElements {
 
@@ -41,7 +35,7 @@ declare namespace ApiElements {
    * `--websocket-history-time-label` | Color of the date-time label | `rgba(0, 0, 0, 0.54)`
    * `--websocket-history-date-time` | Mixin applied to the `date-time` element | `{}`
    */
-  class WebsocketHistory extends Polymer.Element {
+  class WebsocketHistory extends PolymerElement {
 
     /**
      * List of history items to render
@@ -55,6 +49,11 @@ declare namespace ApiElements {
   }
 }
 
-interface HTMLElementTagNameMap {
-  "websocket-history": ApiElements.WebsocketHistory;
+declare global {
+
+  interface HTMLElementTagNameMap {
+    "websocket-history": ApiElements.WebsocketHistory;
+  }
 }
+
+export {};
