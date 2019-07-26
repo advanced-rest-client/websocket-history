@@ -5,20 +5,16 @@
  *   https://github.com/Polymer/tools/tree/master/packages/gen-typescript-declarations
  *
  * To modify these typings, edit the source file(s):
- *   websocket-history.html
+ *   websocket-history.js
  */
 
 
 // tslint:disable:variable-name Describing an API that's defined elsewhere.
 // tslint:disable:no-any describes the API as best we are able today
 
-/// <reference path="../polymer/types/polymer-element.d.ts" />
-/// <reference path="../paper-item/paper-item.d.ts" />
-/// <reference path="../paper-item/paper-item-body.d.ts" />
-/// <reference path="../paper-button/paper-button.d.ts" />
-/// <reference path="../date-time/date-time.d.ts" />
+import {LitElement, html, css} from 'lit-element';
 
-declare namespace ApiElements {
+declare namespace UiElements {
 
   /**
    * A web socket connections history view for ARC
@@ -28,33 +24,63 @@ declare namespace ApiElements {
    * ```html
    * <websocket-history items="[...]"></websocket-history>
    * ```
-   *
-   * ### Styling
-   *
-   * `<websocket-history>` provides the following custom properties and mixins
-   * for styling:
-   *
-   * Custom property | Description | Default
-   * ----------------|-------------|----------
-   * `--websocket-history` | Mixin applied to the element | `{}`
-   * `--arc-font-subhead` | Mixin applied to the element's title | `{}`
-   * `--websocket-history-time-label` | Color of the date-time label | `rgba(0, 0, 0, 0.54)`
-   * `--websocket-history-date-time` | Mixin applied to the `date-time` element | `{}`
    */
-  class WebsocketHistory extends Polymer.Element {
+  class WebsocketHistory extends LitElement {
+    readonly _model: any;
+
+    /**
+     * When set the data are being loaded from the datastore.
+     */
+    readonly loading: Boolean|null;
+    _loading: boolean|null|undefined;
+    onsocketurlchanged: Function|null;
 
     /**
      * List of history items to render
      */
-    items: any[]|null|undefined;
+    items: Array<object|null>|null;
+    constructor();
+    connectedCallback(): void;
+    disconnectedCallback(): void;
+    firstUpdated(): void;
+    render(): any;
+    _renderList(items: any): any;
+
+    /**
+     * Refreshes list of web socket URL history
+     */
+    refresh(): Promise<any>|null;
+
+    /**
+     * Handler for the `websocket-url-history-changed`. Updates the item in
+     *  the `history` list if available.
+     */
+    _storeItemChanged(e: CustomEvent|null): void;
+
+    /**
+     * Handler for `data-imported`. It refreshes the list.
+     */
+    _dataImportHandler(): void;
+
+    /**
+     * Handler for `datastore-destroyed` event.
+     * If the `datastore` property on the detail object equals or contains
+     * `all` or `websocket-url-history` then it clears the list of items.
+     *
+     * @param e Event dispatched by ARC models.
+     */
+    _dataDeleteHandler(e: CustomEvent|null): void;
 
     /**
      * Called when the user click on the `connect` button
      */
-    _openUrl(e: any): void;
+    _openUrl(e: ClickEvent|null): void;
   }
 }
 
-interface HTMLElementTagNameMap {
-  "websocket-history": ApiElements.WebsocketHistory;
+declare global {
+
+  interface HTMLElementTagNameMap {
+    "websocket-history": UiElements.WebsocketHistory;
+  }
 }
