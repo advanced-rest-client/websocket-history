@@ -26,21 +26,8 @@ import '@advanced-rest-client/arc-models/websocket-url-history-model.js';
  * <websocket-history items="[...]"></websocket-history>
  * ```
  *
- * ### Styling
- *
- * `<websocket-history>` provides the following custom properties and mixins
- * for styling:
- *
- * Custom property | Description | Default
- * ----------------|-------------|----------
- * `--websocket-history` | Mixin applied to the element | `{}`
- * `--arc-font-subhead` | Mixin applied to the element's title | `{}`
- * `--websocket-history-time-label` | Color of the date-time label | `rgba(0, 0, 0, 0.54)`
- * `--websocket-history-date-time` | Mixin applied to the `date-time` element | `{}`
- *
- * @polymer
  * @customElement
- * @memberof ApiElements
+ * @memberof UiElements
  * @demo demo/index.html
  */
 class WebsocketHistory extends LitElement {
@@ -72,6 +59,10 @@ class WebsocketHistory extends LitElement {
 
     .item-body {
       user-select: all;
+    }
+
+    :host([narrow]) date-time {
+      display: none;
     }`;
   }
 
@@ -95,8 +86,7 @@ class WebsocketHistory extends LitElement {
     ${_loading ? html`<p>Loading list</p>` : undefined}
     ${hasItems ?
       this._renderList(items):
-      html`<p class="empty-info">No previous connections</p>`
-}
+      html`<p class="empty-info">No previous connections</p>`}
     <websocket-url-history-model></websocket-url-history-model>`;
   }
 
@@ -165,6 +155,8 @@ class WebsocketHistory extends LitElement {
   constructor() {
     super();
     this._storeItemChanged = this._storeItemChanged.bind(this);
+    this._dataImportHandler = this._dataImportHandler.bind(this);
+    this._dataDeleteHandler = this._dataDeleteHandler.bind(this);
   }
 
   connectedCallback() {
@@ -172,6 +164,15 @@ class WebsocketHistory extends LitElement {
       super.connectedCallback();
     }
     window.addEventListener('websocket-url-history-changed', this._storeItemChanged);
+    window.addEventListener('data-imported', this._dataImportHandler);
+    window.addEventListener('datastore-destroyed', this._dataDeleteHandler);
+    if (!this.hasAttribute('role')) {
+      this.setAttribute('role', 'listbox');
+    }
+    if (!this.hasAttribute('aria-labelledby')) {
+      const txt = 'Select one of web socket items';
+      this.setAttribute('aria-label', txt);
+    }
   }
 
   disconnectedCallback() {
@@ -179,6 +180,8 @@ class WebsocketHistory extends LitElement {
       super.disconnectedCallback();
     }
     window.removeEventListener('websocket-url-history-changed', this._storeItemChanged);
+    window.removeEventListener('data-imported', this._dataImportHandler);
+    window.removeEventListener('datastore-destroyed', this._dataDeleteHandler);
   }
 
   firstUpdated() {
@@ -192,8 +195,8 @@ class WebsocketHistory extends LitElement {
     const model = this._model;
     this._loading = true;
     const result = await model.list();
-    this._loading = false;
     this.items = result;
+    this._loading = false;
   }
 
   /**
@@ -205,20 +208,40 @@ class WebsocketHistory extends LitElement {
     if (e.cancelable) {
       return;
     }
-    if (!this.items) {
+    if (!this.items || !this.items.length) {
       this.items = [e.detail.item];
       return;
     }
     const id = e.detail.item._id;
     const index = this.items.findIndex((item) => item._id === id);
     if (index === -1) {
-      this.items = [...this.items, e.detail.item];
+      this.items = [e.detail.item, ...this.items];
     } else {
       this.items[index] = e.detail.item;
       this.items = [...this.items];
     }
   }
-
+  /**
+   * Handler for `data-imported`. It refreshes the list.
+   */
+  _dataImportHandler() {
+    this.refresh();
+  }
+  /**
+   * Handler for `datastore-destroyed` event.
+   * If the `datastore` property on the detail object equals or contains
+   * `all` or `websocket-url-history` then it clears the list of items.
+   * @param {CustomEvent} e Event dispatched by ARC models.
+   */
+  _dataDeleteHandler(e) {
+    let ds = e.detail.datastore;
+    if (!(ds instanceof Array)) {
+      ds = [ds];
+    }
+    if (~ds.indexOf('all') || ~ds.indexOf('websocket-url-history')) {
+      this.items = [];
+    }
+  }
   /**
    * Called when the user click on the `connect` button
    * @param {ClickEvent} e

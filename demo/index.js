@@ -28,17 +28,24 @@ document.getElementById('narrow').addEventListener('change', (e) => {
 });
 
 document.getElementById('genButton').addEventListener('click', () => {
-  DataGenerator.insertWebsocketData({ size: 100 })
-      .then(() => {
-        document.getElementById('genToast').opened = true;
-      });
+  DataGenerator.insertWebsocketData({ size: 100 }).then(() => {
+    document.getElementById('genToast').opened = true;
+    document.body.dispatchEvent(new CustomEvent('data-imported', {
+      bubbles: true
+    }));
+  });
 });
 
 document.getElementById('delButton').addEventListener('click', () => {
-  DataGenerator.destroyWebsocketsData()
-      .then(() => {
-        document.getElementById('delToast').opened = true;
-      });
+  DataGenerator.destroyWebsocketsData().then(() => {
+    document.getElementById('delToast').opened = true;
+    document.body.dispatchEvent(new CustomEvent('datastore-destroyed', {
+      bubbles: true,
+      detail: {
+        datastore: 'websocket-url-history'
+      }
+    }));
+  });
 });
 
 window.addEventListener('socket-url-changed', function(e) {
